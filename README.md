@@ -1,6 +1,6 @@
 # Grootan Assessment
 
-## Given tasks
+## Completed tasks
 <ol>
   <li>Create a hello world program using Spring-Boot</li>
   <li>Change the Server port</li>
