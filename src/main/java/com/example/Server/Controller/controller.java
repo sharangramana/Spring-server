@@ -12,7 +12,7 @@ public class controller {
         return "Hello World!";
     }
 
-    @PostMapping("/")
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
     public String postMap(@RequestBody String message) {
         System.out.println(message);
