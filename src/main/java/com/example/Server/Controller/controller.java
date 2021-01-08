@@ -1,9 +1,13 @@
 package com.example.Server.Controller;
 
+import com.example.Server.Model.User;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
 
 @Controller
 public class controller {
@@ -24,40 +28,29 @@ public class controller {
     }
 
     // task 3
-    @RequestMapping(value = "/passmessage", method = RequestMethod.POST)
+    HashMap<Integer, User> userDetails;
+
+    @RequestMapping(value = "/users/add/", method = RequestMethod.POST)
     @ResponseBody
-    public void storeValue(@RequestBody String message) {
-        System.out.println(message);
-        try (PrintWriter out = new PrintWriter("File.txt")) {
-            out.println(message);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public String addUserDetails(@RequestBody User user) {
+        System.out.println(user.toString());
+        userDetails = new HashMap<>();
+        userDetails.put(user.getId(), user);
+        return user.toString();
     }
 
-    @RequestMapping(value = "/updatemessage", method = RequestMethod.PUT)
+    @RequestMapping(value = "/users/update/", method = RequestMethod.PUT)
     @ResponseBody
-    public void updateValue(@RequestBody String message) throws IOException {
-        System.out.println(message);
-        File updateFile = new File("File.txt");
-        String oldContent = "";
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(updateFile));
-            String line = reader.readLine();
-
-            while (line != null)
-            {
-                oldContent = oldContent + line + System.lineSeparator();
-                line = reader.readLine();
-            }
-            String updatedMessage = oldContent.replaceAll("client", message);
-            FileWriter writer = new FileWriter(updateFile);
-            writer.write(updatedMessage);
-            reader.close();
-            writer.close();
+    public String updateUserMobilenumById(@RequestBody ObjectNode userObject) {
+        int id = userObject.get("id").asInt();
+        String phoneNumber = userObject.get("phoneNumber").asText();
+        if(userDetails.containsKey(id)) {
+            User temp = userDetails.get(id);
+            temp.setPhoneNumber(phoneNumber);
+            userDetails.put(id, temp);
+            System.out.println(Arrays.asList(userDetails));
+            return "success";
         }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
+        return "Invalid User ID";
     }
 }
