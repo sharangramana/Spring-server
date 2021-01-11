@@ -1,4 +1,4 @@
-package com.example.Server.Model;
+package com.example.Server.models;
 
 public class User {
     private int id;

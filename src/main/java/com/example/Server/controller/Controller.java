@@ -1,17 +1,14 @@
-package com.example.Server.Controller;
+package com.example.Server.controller;
 
-import com.example.Server.Model.User;
+import com.example.Server.models.User;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
-public class controller {
+public class Controller {
 
     // task 1
     @GetMapping("/")
@@ -79,7 +76,7 @@ public class controller {
                 User temp = userDetails.get(id);
                 temp.setPhoneNumber(phoneNumber);
                 userDetails.put(id, temp);
-                System.out.println(Arrays.asList(userDetails));
+                System.out.println(Collections.singletonList(userDetails));
                 return "success";
             }
             return "Invalid User ID";
@@ -93,19 +90,19 @@ public class controller {
     @DeleteMapping("/users/delete/{id}")
     public void deleteUserById(@PathVariable int id) {
         userDetails.remove(id);
-        System.out.println(Arrays.asList(userDetails));
+        System.out.println(Collections.singletonList(userDetails));
     }
 
     //get Users List By roles
     @GetMapping("/users/get/{role}")
-    public ArrayList getUsersByRole(@PathVariable String role) {
+    public ArrayList<User> getUsersByRole(@PathVariable String role) {
         ArrayList<User> matchedProfiles = new ArrayList<>();
         for(Map.Entry<Integer, User> user: userDetails.entrySet()) {
             if(user.getValue().getRole().equals(role)) {
                 matchedProfiles.add(user.getValue());
             }
         }
-        System.out.println(Arrays.asList(userDetails));
+        System.out.println(Collections.singletonList(userDetails));
         return matchedProfiles;
     }
 }
