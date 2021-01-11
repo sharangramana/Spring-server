@@ -71,17 +71,22 @@ public class controller {
     }
 
     @PutMapping("/users/update/")
-    public String updateUserMobilenumById(@RequestBody ObjectNode userObject) {
-        int id = userObject.get("id").asInt();
-        String phoneNumber = userObject.get("phoneNumber").asText();
-        if(userDetails.containsKey(id)) {
-            User temp = userDetails.get(id);
-            temp.setPhoneNumber(phoneNumber);
-            userDetails.put(id, temp);
-            System.out.println(Arrays.asList(userDetails));
-            return "success";
+    public String updateUserMobilenumById(@RequestBody(required = false) ObjectNode userObject) {
+        try {
+            int id = userObject.get("id").asInt();
+            String phoneNumber = userObject.get("phoneNumber").asText();
+            if(userDetails.containsKey(id)) {
+                User temp = userDetails.get(id);
+                temp.setPhoneNumber(phoneNumber);
+                userDetails.put(id, temp);
+                System.out.println(Arrays.asList(userDetails));
+                return "success";
+            }
+            return "Invalid User ID";
         }
-        return "Invalid User ID";
+        catch (Exception e) {
+            return "Please enter valid Credentials to update";
+        }
     }
 
     // delete
