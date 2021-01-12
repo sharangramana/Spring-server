@@ -1,5 +1,6 @@
 package com.example.Server.controller;
 
+import com.example.Server.exceptions.MissingMobileNumException;
 import com.example.Server.models.User;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.web.bind.annotation.*;
@@ -82,7 +83,7 @@ public class Controller {
             return "Invalid User ID";
         }
         catch (Exception e) {
-            return "Please enter valid Credentials to update";
+            throw new MissingMobileNumException("Please enter valid Credentials to update");
         }
     }
 
@@ -97,11 +98,15 @@ public class Controller {
     @GetMapping("/users/get/{role}")
     public ArrayList<User> getUsersByRole(@PathVariable String role) {
         ArrayList<User> matchedProfiles = new ArrayList<>();
-        for(Map.Entry<Integer, User> user: userDetails.entrySet()) {
-            if(user.getValue().getRole().equals(role)) {
-                matchedProfiles.add(user.getValue());
-            }
-        }
+//        for(Map.Entry<Integer, User> user: userDetails.entrySet()) {
+//            if(user.getValue().getRole().equals(role)) {
+//                matchedProfiles.add(user.getValue());
+//            }
+//        }
+        userDetails.entrySet().stream()
+                .filter(user -> user.getValue().getRole().equals(role))
+                .forEach(matcheduser -> matchedProfiles.add(matcheduser.getValue()));
+
         System.out.println(Collections.singletonList(userDetails));
         return matchedProfiles;
     }
