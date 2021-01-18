@@ -1,13 +1,16 @@
 package com.example.Server.controller;
 
 import com.example.Server.exceptions.MissingMobileNumException;
+import com.example.Server.exceptions.SomethingWentWrongException;
 import com.example.Server.exceptions.UserAlreadyPresentException;
+import com.example.Server.exceptions.UserNotFoundException;
 import com.example.Server.models.User;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class Controller {
@@ -93,23 +96,38 @@ public class Controller {
 
     // delete
     @DeleteMapping("/users/delete/{id}")
-    public void deleteUserById(@PathVariable int id) {
-        userDetails.remove(id);
-        System.out.println(Collections.singletonList(userDetails));
+    public String deleteUserById(@PathVariable int id) {
+        if(userDetails.containsKey(id))
+        {
+            try {
+                userDetails.remove(id);
+            }
+            catch(Exception e)
+            {
+                throw new SomethingWentWrongException("The requested User is not removed!");
+            }
+            System.out.println(Collections.singletonList(userDetails));
+            return "User is Successfully deleted";
+        }
+        else {
+            throw new UserNotFoundException("The requested user is not present in the database");
+        }
     }
 
     //get Users List By roles
     @GetMapping("/users/get/{role}")
-    public ArrayList<User> getUsersByRole(@PathVariable String role) {
-        ArrayList<User> matchedProfiles = new ArrayList<>();
+    public List<User> getUsersByRole(@PathVariable String role) {
+        //ArrayList<User> matchedProfiles = new ArrayList<>();
 //        for(Map.Entry<Integer, User> user: userDetails.entrySet()) {
 //            if(user.getValue().getRole().equals(role)) {
 //                matchedProfiles.add(user.getValue());
 //            }
 //        }
-        userDetails.entrySet().stream()
+        List<User> matchedProfiles = userDetails.entrySet().stream()
                 .filter(user -> user.getValue().getRole().equals(role))
-                .forEach(matcheduser -> matchedProfiles.add(matcheduser.getValue()));
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+                //.forEach(matcheduser -> matchedProfiles.add(matcheduser.getValue()));
 
         System.out.println(Collections.singletonList(userDetails));
         return matchedProfiles;
