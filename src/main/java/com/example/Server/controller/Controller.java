@@ -129,7 +129,7 @@ public class Controller {
                 .collect(Collectors.toList());
                 //.forEach(matcheduser -> matchedProfiles.add(matcheduser.getValue()));
 
-        System.out.println(Collections.singletonList(userDetails));
+        System.out.println(Collections.singletonList(matchedProfiles));
         return matchedProfiles;
     }
 }
