@@ -1,6 +1,7 @@
 package com.example.Server.controller;
 
 import com.example.Server.exceptions.MissingMobileNumException;
+import com.example.Server.exceptions.UserAlreadyPresentException;
 import com.example.Server.models.User;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,9 @@ public class Controller {
 
     @PostMapping("/users/add/")
     public String addUserDetails(@RequestBody User user) {
+        if(userDetails.containsKey(user.getId())) {
+            throw new UserAlreadyPresentException("User is already present with this ID");
+        }
         userDetails.put(user.getId(), user);
         System.out.println(Arrays.asList(userDetails));
         return user.toString();
