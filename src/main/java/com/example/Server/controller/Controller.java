@@ -8,6 +8,7 @@ import com.example.Server.models.User;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ public class Controller {
 
     // task 1
     @GetMapping("/")
-    public String home(){
+    public String home() {
         return "Hello World!";
     }
 
@@ -27,6 +28,7 @@ public class Controller {
         System.out.println(message);
         return "success";
     }
+
     // task 3
     @PostMapping("/passmessage")
     public void storeValue(@RequestBody String message) {
@@ -47,8 +49,7 @@ public class Controller {
             BufferedReader reader = new BufferedReader(new FileReader(updateFile));
             String line = reader.readLine();
 
-            while (line != null)
-            {
+            while (line != null) {
                 oldContent = oldContent + line + System.lineSeparator();
                 line = reader.readLine();
             }
@@ -57,8 +58,7 @@ public class Controller {
             writer.write(updatedMessage);
             reader.close();
             writer.close();
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -66,8 +66,8 @@ public class Controller {
     HashMap<Integer, User> userDetails = new HashMap<>();
 
     @PostMapping("/users/add/")
-    public String addUserDetails(@RequestBody User user) {
-        if(userDetails.containsKey(user.getId())) {
+    public String addUserDetails(@Valid @RequestBody User user) {
+        if (userDetails.containsKey(user.getId())) {
             throw new UserAlreadyPresentException("User is already present with this ID");
         }
         userDetails.put(user.getId(), user);
@@ -80,7 +80,7 @@ public class Controller {
         try {
             int id = userObject.get("id").asInt();
             String phoneNumber = userObject.get("phoneNumber").asText();
-            if(userDetails.containsKey(id)) {
+            if (userDetails.containsKey(id)) {
                 User temp = userDetails.get(id);
                 temp.setPhoneNumber(phoneNumber);
                 userDetails.put(id, temp);
@@ -88,8 +88,7 @@ public class Controller {
                 return "success";
             }
             return "Invalid User ID";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new MissingMobileNumException("Please enter valid Credentials to update");
         }
     }
@@ -97,19 +96,15 @@ public class Controller {
     // delete
     @DeleteMapping("/users/delete/{id}")
     public String deleteUserById(@PathVariable int id) {
-        if(userDetails.containsKey(id))
-        {
+        if (userDetails.containsKey(id)) {
             try {
                 userDetails.remove(id);
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 throw new SomethingWentWrongException("The requested User is not removed!");
             }
             System.out.println(Collections.singletonList(userDetails));
             return "User is Successfully deleted";
-        }
-        else {
+        } else {
             throw new UserNotFoundException("The requested user is not present in the database");
         }
     }
@@ -127,7 +122,7 @@ public class Controller {
                 .filter(user -> user.getValue().getRole().equals(role))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
-                //.forEach(matcheduser -> matchedProfiles.add(matcheduser.getValue()));
+        //.forEach(matcheduser -> matchedProfiles.add(matcheduser.getValue()));
 
         System.out.println(Collections.singletonList(matchedProfiles));
         return matchedProfiles;

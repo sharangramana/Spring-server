@@ -1,11 +1,29 @@
 package com.example.Server.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class User {
+
+    //@NotBlank(message = "id is needed")
+
+    @Min(value = 1, message = "Id cannot be left empty and it should be greater than 0")
     private int id;
+
+    @NotNull(message = "Name of the user cannot be empty")
     private String name;
+
     private String gender;
+
+    @NotNull(message = "Email address cannot be empty")
     private String email;
+
     private String phoneNumber;
+
+    @NotNull(message = "Role must be provided")
     private String role;
 
     public User(int id, String name, String gender, String email, String phoneNumber, String role) {
