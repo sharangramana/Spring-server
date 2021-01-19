@@ -54,4 +54,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionDetail, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EmailNotValidException.class)
+    public ResponseEntity<?> emailNotValidException(EmailNotValidException exp, WebRequest webRequest) {
+        ExceptionDetail exceptionDetail = new ExceptionDetail(new Date(), exp.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(exceptionDetail, HttpStatus.NOT_ACCEPTABLE);
+    }
 }

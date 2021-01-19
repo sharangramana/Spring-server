@@ -14,16 +14,19 @@ public class User {
     private int id;
 
     @NotNull(message = "Name of the user cannot be empty")
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     private String gender;
 
     @NotNull(message = "Email address cannot be empty")
+    @NotBlank(message = "Email cannot be empty")
     private String email;
 
     private String phoneNumber;
 
     @NotNull(message = "Role must be provided")
+    @NotBlank(message = "Role cannot be empty")
     private String role;
 
     public User(int id, String name, String gender, String email, String phoneNumber, String role) {

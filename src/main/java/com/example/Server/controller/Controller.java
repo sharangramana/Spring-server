@@ -1,9 +1,6 @@
 package com.example.Server.controller;
 
-import com.example.Server.exceptions.MissingMobileNumException;
-import com.example.Server.exceptions.SomethingWentWrongException;
-import com.example.Server.exceptions.UserAlreadyPresentException;
-import com.example.Server.exceptions.UserNotFoundException;
+import com.example.Server.exceptions.*;
 import com.example.Server.models.User;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RestController
@@ -69,6 +68,15 @@ public class Controller {
     public String addUserDetails(@Valid @RequestBody User user) {
         if (userDetails.containsKey(user.getId())) {
             throw new UserAlreadyPresentException("User is already present with this ID");
+        }
+        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                        "[a-zA-Z0-9_+&*-]+)*@" +
+                        "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                        "A-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(user.getEmail());
+        if (!matcher.matches()) {
+            throw new EmailNotValidException("Enter a valid email ID");
         }
         userDetails.put(user.getId(), user);
         System.out.println(Arrays.asList(userDetails));
